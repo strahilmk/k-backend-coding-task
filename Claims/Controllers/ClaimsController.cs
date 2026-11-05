@@ -1,4 +1,4 @@
-using Claims.Models;
+using Claims.Dtos;
 using Claims.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,15 +17,15 @@ namespace Claims.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Claim>> GetAsync()
+        public async Task<IEnumerable<ClaimResponse>> GetAsync()
         {
             return await _claimsService.GetAllAsync();
         }
 
         [HttpPost]
-        public async Task<ActionResult<Claim>> CreateAsync(Claim claim)
+        public async Task<ActionResult<ClaimResponse>> CreateAsync(CreateClaimRequest request)
         {
-            var created = await _claimsService.CreateAsync(claim);
+            var created = await _claimsService.CreateAsync(request);
             return CreatedAtRoute("GetClaim", new { id = created.Id }, created);
         }
 
@@ -36,7 +36,7 @@ namespace Claims.Controllers
         }
 
         [HttpGet("{id}", Name = "GetClaim")]
-        public async Task<ActionResult<Claim>> GetAsync(string id)
+        public async Task<ActionResult<ClaimResponse>> GetAsync(string id)
         {
             var claim = await _claimsService.GetByIdAsync(id);
             return claim is null ? NotFound() : claim;

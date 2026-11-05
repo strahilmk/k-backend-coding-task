@@ -1,4 +1,5 @@
 using Claims.Auditing;
+using Claims.Dtos;
 using Claims.Models;
 using Claims.Repositories;
 
@@ -15,22 +16,32 @@ public class ClaimsService : IClaimsService
         _auditer = auditer;
     }
 
-    public Task<IEnumerable<Claim>> GetAllAsync()
+    public async Task<IEnumerable<ClaimResponse>> GetAllAsync()
     {
-        return _claimsRepository.GetAllAsync();
+        var claims = await _claimsRepository.GetAllAsync();
+        return claims.Select(ClaimResponse.From);
     }
 
-    public Task<Claim?> GetByIdAsync(string id)
+    public async Task<ClaimResponse?> GetByIdAsync(string id)
     {
-        return _claimsRepository.GetByIdAsync(id);
+        var claim = await _claimsRepository.GetByIdAsync(id);
+        return claim is null ? null : ClaimResponse.From(claim);
     }
 
-    public async Task<Claim> CreateAsync(Claim claim)
+    public async Task<ClaimResponse> CreateAsync(CreateClaimRequest request)
     {
-        claim.Id = Guid.NewGuid().ToString();
+        var claim = new Claim
+        {
+            CoverId = request.CoverId,
+            Created = request.Created,
+            Name = request.Name,
+            Type = request.Type,
+            DamageCost = request.DamageCost
+        };
+
         await _claimsRepository.AddAsync(claim);
         _auditer.AuditClaim(claim.Id, "POST");
-        return claim;
+        return ClaimResponse.From(claim);
     }
 
     public async Task DeleteAsync(string id)

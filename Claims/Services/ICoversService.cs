@@ -1,3 +1,4 @@
+using Claims.Dtos;
 using Claims.Models;
 
 namespace Claims.Services;
@@ -7,13 +8,13 @@ namespace Claims.Services;
 /// </summary>
 public interface ICoversService
 {
-    Task<IEnumerable<Cover>> GetAllAsync();
+    Task<IEnumerable<CoverResponse>> GetAllAsync();
 
     /// <returns>The cover, or null if no cover has this id.</returns>
-    Task<Cover?> GetByIdAsync(string id);
+    Task<CoverResponse?> GetByIdAsync(string id);
 
-    /// <summary>Assigns a new id to the cover, computes its premium and stores it.</summary>
-    Task<Cover> CreateAsync(Cover cover);
+    /// <summary>Computes the premium for the new cover and stores it.</summary>
+    Task<CoverResponse> CreateAsync(CreateCoverRequest request);
 
     /// <summary>Deletes the cover. Does nothing if no cover has this id.</summary>
     Task DeleteAsync(string id);

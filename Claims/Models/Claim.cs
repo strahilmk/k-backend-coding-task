@@ -6,7 +6,7 @@ namespace Claims.Models
     public class Claim
     {
         [BsonId]
-        public string? Id { get; set; }
+        public string Id { get; set; } = null!; // generated on add, see ClaimsContext
 
         [BsonElement("coverId")]
         public required string CoverId { get; set; }

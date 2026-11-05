@@ -5,7 +5,7 @@ namespace Claims.Models;
 public class Cover
 {
     [BsonId]
-    public string? Id { get; set; }
+    public string Id { get; set; } = null!; // generated on add, see ClaimsContext
 
     [BsonElement("startDate")]
     public DateTime StartDate { get; set; }

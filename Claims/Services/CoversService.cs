@@ -1,4 +1,5 @@
 using Claims.Auditing;
+using Claims.Dtos;
 using Claims.Models;
 using Claims.Repositories;
 
@@ -15,23 +16,31 @@ public class CoversService : ICoversService
         _auditer = auditer;
     }
 
-    public Task<IEnumerable<Cover>> GetAllAsync()
+    public async Task<IEnumerable<CoverResponse>> GetAllAsync()
     {
-        return _coversRepository.GetAllAsync();
+        var covers = await _coversRepository.GetAllAsync();
+        return covers.Select(CoverResponse.From);
     }
 
-    public Task<Cover?> GetByIdAsync(string id)
+    public async Task<CoverResponse?> GetByIdAsync(string id)
     {
-        return _coversRepository.GetByIdAsync(id);
+        var cover = await _coversRepository.GetByIdAsync(id);
+        return cover is null ? null : CoverResponse.From(cover);
     }
 
-    public async Task<Cover> CreateAsync(Cover cover)
+    public async Task<CoverResponse> CreateAsync(CreateCoverRequest request)
     {
-        cover.Id = Guid.NewGuid().ToString();
-        cover.Premium = ComputePremium(cover.StartDate, cover.EndDate, cover.Type);
+        var cover = new Cover
+        {
+            StartDate = request.StartDate,
+            EndDate = request.EndDate,
+            Type = request.Type,
+            Premium = ComputePremium(request.StartDate, request.EndDate, request.Type)
+        };
+
         await _coversRepository.AddAsync(cover);
         _auditer.AuditCover(cover.Id, "POST");
-        return cover;
+        return CoverResponse.From(cover);
     }
 
     public async Task DeleteAsync(string id)
