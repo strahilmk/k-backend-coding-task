@@ -9,12 +9,10 @@ namespace Claims.Controllers
     [Route("[controller]")]
     public class ClaimsController : ControllerBase
     {
-        private readonly ILogger<ClaimsController> _logger;
         private readonly IClaimsService _claimsService;
 
-        public ClaimsController(ILogger<ClaimsController> logger, IClaimsService claimsService)
+        public ClaimsController(IClaimsService claimsService)
         {
-            _logger = logger;
             _claimsService = claimsService;
         }
 
@@ -25,9 +23,10 @@ namespace Claims.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateAsync(Claim claim)
+        public async Task<ActionResult<Claim>> CreateAsync(Claim claim)
         {
-            return Ok(await _claimsService.CreateAsync(claim));
+            var created = await _claimsService.CreateAsync(claim);
+            return CreatedAtRoute("GetClaim", new { id = created.Id }, created);
         }
 
         [HttpDelete("{id}")]
@@ -36,10 +35,11 @@ namespace Claims.Controllers
             await _claimsService.DeleteAsync(id);
         }
 
-        [HttpGet("{id}")]
-        public async Task<Claim?> GetAsync(string id)
+        [HttpGet("{id}", Name = "GetClaim")]
+        public async Task<ActionResult<Claim>> GetAsync(string id)
         {
-            return await _claimsService.GetByIdAsync(id);
+            var claim = await _claimsService.GetByIdAsync(id);
+            return claim is null ? NotFound() : claim;
         }
     }
 }

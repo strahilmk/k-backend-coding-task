@@ -9,18 +9,16 @@ namespace Claims.Controllers;
 public class CoversController : ControllerBase
 {
     private readonly ICoversService _coversService;
-    private readonly ILogger<CoversController> _logger;
 
-    public CoversController(ICoversService coversService, ILogger<CoversController> logger)
+    public CoversController(ICoversService coversService)
     {
         _coversService = coversService;
-        _logger = logger;
     }
 
     [HttpPost("compute")]
-    public async Task<ActionResult> ComputePremiumAsync(DateTime startDate, DateTime endDate, CoverType coverType)
+    public ActionResult<decimal> ComputePremium(DateTime startDate, DateTime endDate, CoverType coverType)
     {
-        return Ok(_coversService.ComputePremium(startDate, endDate, coverType));
+        return _coversService.ComputePremium(startDate, endDate, coverType);
     }
 
     [HttpGet]
@@ -29,16 +27,18 @@ public class CoversController : ControllerBase
         return Ok(await _coversService.GetAllAsync());
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id}", Name = "GetCover")]
     public async Task<ActionResult<Cover>> GetAsync(string id)
     {
-        return Ok(await _coversService.GetByIdAsync(id));
+        var cover = await _coversService.GetByIdAsync(id);
+        return cover is null ? NotFound() : cover;
     }
 
     [HttpPost]
-    public async Task<ActionResult> CreateAsync(Cover cover)
+    public async Task<ActionResult<Cover>> CreateAsync(Cover cover)
     {
-        return Ok(await _coversService.CreateAsync(cover));
+        var created = await _coversService.CreateAsync(cover);
+        return CreatedAtRoute("GetCover", new { id = created.Id }, created);
     }
 
     [HttpDelete("{id}")]
