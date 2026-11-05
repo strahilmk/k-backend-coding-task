@@ -13,7 +13,7 @@
         {
             var claimAudit = new ClaimAudit()
             {
-                Created = DateTime.Now,
+                Created = DateTime.UtcNow,
                 HttpRequestType = httpRequestType,
                 ClaimId = id
             };
@@ -26,7 +26,7 @@
         {
             var coverAudit = new CoverAudit()
             {
-                Created = DateTime.Now,
+                Created = DateTime.UtcNow,
                 HttpRequestType = httpRequestType,
                 CoverId = id
             };

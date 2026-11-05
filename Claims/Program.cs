@@ -1,5 +1,6 @@
 using Claims.Auditing;
 using Claims.Data;
+using Claims.Json;
 using Claims.Repositories;
 using Claims.Services;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +30,7 @@ builder.Services
     .AddJsonOptions(x =>
     {
         x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        x.JsonSerializerOptions.Converters.Add(new UtcDateTimeConverter());
     });
 
 builder.Services.AddDbContext<AuditContext>(options =>
