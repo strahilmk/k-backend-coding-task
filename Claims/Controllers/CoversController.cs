@@ -1,4 +1,5 @@
 using Claims.Auditing;
+using Claims.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
