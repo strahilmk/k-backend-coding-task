@@ -5,7 +5,7 @@ namespace Claims.Models;
 public class Cover
 {
     [BsonId]
-    public string Id { get; set; }
+    public string? Id { get; set; }
 
     [BsonElement("startDate")]
     public DateTime StartDate { get; set; }
@@ -13,7 +13,7 @@ public class Cover
     [BsonElement("endDate")]
     public DateTime EndDate { get; set; }
 
-    [BsonElement("claimType")]
+    [BsonElement("coverType")]
     public CoverType Type { get; set; }
 
     [BsonElement("premium")]
