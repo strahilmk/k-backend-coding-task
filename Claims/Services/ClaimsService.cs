@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Claims.Auditing;
 using Claims.Dtos;
 using Claims.Models;
@@ -8,11 +9,13 @@ namespace Claims.Services;
 public class ClaimsService : IClaimsService
 {
     private readonly IClaimsRepository _claimsRepository;
+    private readonly ICoversRepository _coversRepository;
     private readonly IAuditer _auditer;
 
-    public ClaimsService(IClaimsRepository claimsRepository, IAuditer auditer)
+    public ClaimsService(IClaimsRepository claimsRepository, ICoversRepository coversRepository, IAuditer auditer)
     {
         _claimsRepository = claimsRepository;
+        _coversRepository = coversRepository;
         _auditer = auditer;
     }
 
@@ -30,6 +33,23 @@ public class ClaimsService : IClaimsService
 
     public async Task<ClaimResponse> CreateAsync(CreateClaimRequest request)
     {
+        var cover = await _coversRepository.GetByIdAsync(request.CoverId);
+        if (cover is null)
+        {
+            throw new ValidationException(
+                new ValidationResult("The claim does not match any cover.", [nameof(request.CoverId)]), null, null);
+        }
+
+        // Compared by date, and both ends of the cover period are included.
+        if (request.Created.Date < cover.StartDate.Date || request.Created.Date > cover.EndDate.Date)
+        {
+            throw new ValidationException(
+                new ValidationResult(
+                    $"The claim cannot be created outside its cover period ({cover.StartDate:yyyy-MM-dd} to {cover.EndDate:yyyy-MM-dd}).",
+                    [nameof(request.Created)]),
+                null, null);
+        }
+
         var claim = new Claim
         {
             CoverId = request.CoverId,

@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Claims.Dtos;
 using Claims.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -25,8 +26,16 @@ namespace Claims.Controllers
         [HttpPost]
         public async Task<ActionResult<ClaimResponse>> CreateAsync(CreateClaimRequest request)
         {
-            var created = await _claimsService.CreateAsync(request);
-            return CreatedAtRoute("GetClaim", new { id = created.Id }, created);
+            try
+            {
+                var created = await _claimsService.CreateAsync(request);
+                return CreatedAtRoute("GetClaim", new { id = created.Id }, created);
+            }
+            catch (ValidationException e)
+            {
+                ModelState.AddModelError(e.ValidationResult.MemberNames.First(), e.Message);
+                return ValidationProblem(ModelState);
+            }
         }
 
         [HttpDelete("{id}")]
