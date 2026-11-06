@@ -1,7 +1,9 @@
 namespace Claims.Auditing
 {
     /// <summary>
-    /// Records each create and delete of a claim or cover as a row in SQL Server.
+    /// Queues an audit entry for each create and delete of a claim or cover.
+    /// <see cref="AuditWorker"/> writes the entries to SQL Server in the background,
+    /// so these methods return without waiting for the database.
     /// </summary>
     public interface IAuditer
     {

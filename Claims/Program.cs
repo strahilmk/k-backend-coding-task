@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using System.Runtime.InteropServices;
 using System.Text.Json.Serialization;
+using System.Threading.Channels;
 using Testcontainers.MongoDb;
 using Testcontainers.MsSql;
 
@@ -43,7 +44,10 @@ builder.Services.AddDbContext<ClaimsContext>(options =>
     options.UseMongoDB(database.Client, database.DatabaseNamespace.DatabaseName);
 });
 
-builder.Services.AddScoped<IAuditer, Auditer>();
+builder.Services.AddSingleton(Channel.CreateBounded<IAuditEntry>(
+    new BoundedChannelOptions(1000) { SingleReader = true }));
+builder.Services.AddSingleton<IAuditer, Auditer>();
+builder.Services.AddHostedService<AuditWorker>();
 builder.Services.AddScoped<IClaimsRepository, ClaimsRepository>();
 builder.Services.AddScoped<ICoversRepository, CoversRepository>();
 builder.Services.AddScoped<IClaimsService, ClaimsService>();

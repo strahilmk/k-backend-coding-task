@@ -28,7 +28,7 @@ Everything is in the `Claims` project, split into folders:
 | `Dtos` | Request and response bodies, so clients never send or see the stored models |
 | `Models` | `Claim` and `Cover`, as stored in MongoDB |
 | `Data` | `ClaimsContext`, the EF Core context for MongoDB. It also generates the ids |
-| `Auditing` | Audit rows in SQL Server: `AuditContext`, the audit entities and `Auditer` |
+| `Auditing` | Audit rows in SQL Server. `Auditer` queues each entry in memory, and `AuditWorker` writes it in the background, so requests don't wait for the database |
 
 Controllers depend on service interfaces, and services depend on repository interfaces and `IAuditer`. All of them are registered in `Program.cs`.
 
