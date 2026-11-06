@@ -42,6 +42,7 @@ A bounded `Channel` (capacity 1000) with one `BackgroundService`. The request qu
 ## Assumptions
 
 - Task 5: "additional" discount means 8% total for Yacht and 3% total for other types in the last period.
+- Task 5: only whole days are charged. A partial last day isn't counted, so 30.5 days cost the same as 30. The original code charged it as a full day. On `POST /Covers/compute`, a period shorter than one day costs 0.
 
 ## Template bug found
 

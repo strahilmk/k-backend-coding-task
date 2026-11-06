@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Claims.Tests.Services;
 
-// The premium formula itself is tested separately, once its bugs are fixed (Task 5).
+// The premium formula itself is tested in PremiumTests.
 public class CoversServiceTests
 {
     private readonly FakeCoversRepository _covers = new();
