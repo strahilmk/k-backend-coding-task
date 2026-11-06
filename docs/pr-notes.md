@@ -59,6 +59,8 @@ Deploying to Azure is optional in the spec and not done. The plan I'd discuss:
 ## Open questions to discuss
 
 - Task 5: should a partial day be charged? Today only whole days count, so 30.5 days cost the same as 30, and on `POST /Covers/compute` a period shorter than one day (for example 12 hours) costs 0. The original code charged a partial day as a full day. The spec doesn't say, so this needs discussing: charge a partial day as a full day, charge it pro rata, or keep not charging it.
+- Task 2: `DamageCost` is only capped per claim (100,000). It isn't compared with the cover, because a cover has no insured amount or limit to compare it against. Rules such as "the total of a cover's claims can't exceed its limit" would need a new field and a rule the spec doesn't give.
+- Task 1: deleting a cover doesn't touch its claims. They stay, with a `CoverId` that no longer matches a cover, and can still be read. Options: reject deleting a cover that has claims, delete its claims with it, or keep the claims as history.
 
 ## Template bug found before Task 1
 
