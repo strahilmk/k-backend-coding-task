@@ -1,11 +1,11 @@
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace Claims;
+namespace Claims.Models;
 
 public class Cover
 {
     [BsonId]
-    public string Id { get; set; }
+    public string Id { get; set; } = null!; // generated on add, see ClaimsContext
 
     [BsonElement("startDate")]
     public DateTime StartDate { get; set; }
@@ -13,7 +13,7 @@ public class Cover
     [BsonElement("endDate")]
     public DateTime EndDate { get; set; }
 
-    [BsonElement("claimType")]
+    [BsonElement("coverType")]
     public CoverType Type { get; set; }
 
     [BsonElement("premium")]

@@ -1,21 +1,21 @@
 ﻿using System.Text.Json.Serialization;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace Claims
+namespace Claims.Models
 {
     public class Claim
     {
         [BsonId]
-        public string Id { get; set; }
+        public string Id { get; set; } = null!; // generated on add, see ClaimsContext
 
         [BsonElement("coverId")]
-        public string CoverId { get; set; }
+        public required string CoverId { get; set; }
 
         [BsonElement("created")]
         public DateTime Created { get; set; }
 
         [BsonElement("name")]
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
         [BsonElement("claimType")]
         public ClaimType Type { get; set; }

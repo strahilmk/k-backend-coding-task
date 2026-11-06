@@ -1,38 +1,49 @@
-﻿namespace Claims.Auditing
-{
-    public class Auditer
-    {
-        private readonly AuditContext _auditContext;
+﻿using System.Threading.Channels;
 
-        public Auditer(AuditContext auditContext)
+namespace Claims.Auditing
+{
+    /// <summary>
+    /// Writes audit entries to the in-memory queue that <see cref="AuditWorker"/> reads.
+    /// If the queue is full or closed, the entry is dropped and logged, so a request
+    /// never waits for auditing.
+    /// </summary>
+    public class Auditer : IAuditer
+    {
+        private readonly Channel<IAuditEntry> _channel;
+        private readonly ILogger<Auditer> _logger;
+
+        public Auditer(Channel<IAuditEntry> channel, ILogger<Auditer> logger)
         {
-            _auditContext = auditContext;
+            _channel = channel;
+            _logger = logger;
         }
 
-        public void AuditClaim(string id, string httpRequestType)
+        public void AuditClaim(string id, HttpRequestType httpRequestType)
         {
-            var claimAudit = new ClaimAudit()
+            Enqueue(new ClaimAudit
             {
-                Created = DateTime.Now,
+                Created = DateTime.UtcNow,
                 HttpRequestType = httpRequestType,
                 ClaimId = id
-            };
-
-            _auditContext.Add(claimAudit);
-            _auditContext.SaveChanges();
+            }, id);
         }
-        
-        public void AuditCover(string id, string httpRequestType)
+
+        public void AuditCover(string id, HttpRequestType httpRequestType)
         {
-            var coverAudit = new CoverAudit()
+            Enqueue(new CoverAudit
             {
-                Created = DateTime.Now,
+                Created = DateTime.UtcNow,
                 HttpRequestType = httpRequestType,
                 CoverId = id
-            };
+            }, id);
+        }
 
-            _auditContext.Add(coverAudit);
-            _auditContext.SaveChanges();
+        private void Enqueue(IAuditEntry entry, string id)
+        {
+            if (!_channel.Writer.TryWrite(entry))
+            {
+                _logger.LogError("Audit queue is full or closed, dropped entry for {Id}", id);
+            }
         }
     }
 }

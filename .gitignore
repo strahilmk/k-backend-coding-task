@@ -29,6 +29,7 @@ bld/
 [Ll]ogs/
 # Data folder
 [Dd]ata/
+!Claims/Data/
 
 # Visual Studio 2015 cache/options directory
 .vs/
