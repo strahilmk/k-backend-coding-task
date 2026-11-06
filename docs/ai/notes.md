@@ -28,8 +28,6 @@
 ## What it got wrong that we had to fix
 - Said the stored value change from `POST` to `Post` "doesn't matter" because each run starts a fresh database. It does matter for real data.
 - Its `IAuditer` summary became wrong after my queue change. It was updated.
-- A commit command (`git commit -F -`) failed in PowerShell 5.1. Nothing was committed, and it retried with `-m`.
-- A line-ending check with `grep` wrongly reported CRLF in committed files. Re-checked with `git ls-files --eol`: all LF.
 - Expected nullable `Id` to cause new compiler warnings. There were none.
 
 ## Check this
