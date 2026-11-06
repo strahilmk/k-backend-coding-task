@@ -16,7 +16,7 @@
 - Task 1: moving files and fixing namespaces, and building the repository and service layers from my design. While moving the models into `Models`, it noticed that `Cover.Type` was stored as `claimType`.
 - Tasks 1–2: DTOs, the UTC JSON converter, the validation code and its unit tests.
 - Task 1: the README and code comments.
-- Task 3: reviewing my code. It found that queued entries were dropped on shutdown.
+- Task 3: reviewing my code. It found that queued entries were dropped on shutdown. After the fix, a one-off test stopped the app with 499 entries still queued, and all 500 were written.
 - Task 4: unit tests with hand-written fakes, and the controller integration tests.
 - Task 5: reviewing my premium fix. It found that days after 365 still got no discount and fixed that, then wrote premium tests worked out by hand from the spec. All of them fail on the original code.
 - Checking against the running app (curl, and queries against the SQL Server container) and writing commits.
@@ -36,4 +36,3 @@
 
 ## Check this
 - Task 3: "the worker stops before the web server on shutdown" is inferred from how .NET stops hosted services, not tested.
-- Task 3: the shutdown drain fix hasn't been tested with entries still in the queue.
