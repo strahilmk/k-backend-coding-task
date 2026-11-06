@@ -39,6 +39,19 @@ The StartDate rule reads "today" from `TimeProvider` instead of `DateTime.UtcNow
 - Task 1: `[BsonElement]` attributes stay on the models. This ties them to MongoDB, but avoids separate persistence models and mapping.
 - Task 3: claims live in MongoDB and audits in SQL Server, so one transaction can't cover both.
 
+## CI, and how I'd deploy to Azure
+
+CI: `.github/workflows/ci.yml` builds the solution and runs every test, including the integration tests, on each pull request into `main`. GitHub's Ubuntu runners have Docker, so Testcontainers works there as it does locally.
+
+Deploying to Azure is optional in the spec and not done. The plan I'd discuss:
+
+- `Program.cs`: keep Testcontainers for Development and tests, and read connection strings from configuration in every other environment. This is the rewrite the spec warns about.
+- Hosting: App Service on Linux. .NET 10 support there needs checking first.
+- SQL: Azure SQL Database. The existing `Database.Migrate()` at startup creates the audit tables.
+- MongoDB: MongoDB Atlas hosted in an Azure region, or Azure Cosmos DB for MongoDB vCore. Not checked: whether the MongoDB EF Core provider works with Cosmos DB, so Atlas is the safer choice.
+- Secrets: connection strings in App Service settings or Key Vault, never in the repo.
+- CD: a second job that publishes the app and deploys it with `azure/webapps-deploy`. It signs in to Azure with OIDC (a federated credential), so there's no stored secret.
+
 ## Assumptions
 
 - Task 5: "additional" discount means 8% total for Yacht and 3% total for other types in the last period.
