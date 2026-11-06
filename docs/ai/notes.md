@@ -7,6 +7,7 @@
 - The validation rules and their edge cases: a period of one calendar year, both ends of a cover period included, and a 400 with my own message when a claim doesn't match its cover.
 - Task 3 design: I wrote the `Channel` queue, `AuditWorker` and `docs/pr-notes.md` myself.
 - Typing the queue, and using an enum for `HttpRequestType`, stored upper-case.
+- Using `TimeProvider` so the StartDate tests can't fail around midnight UTC, with the rule kept in the DTO. This was for the tests only. Claude raised the risk.
 - When to commit and push.
 
 ## What I used Claude for

@@ -11,6 +11,14 @@ Working notes for the PR description. Update these as decisions change.
 - Alternative: store the offset or time zone alongside the date. That adds a field and more logic for no need in this task.
 - Known gap: query-string dates on `POST /Covers/compute` don't go through the converter.
 
+## TimeProvider, only so tests are stable
+
+The StartDate rule reads "today" from `TimeProvider` instead of `DateTime.UtcNow`. This is only so tests don't fail at random, and it changes nothing in how the app behaves.
+
+- Why: the tests and `Validate` each read the real clock at slightly different moments. A test run that crossed midnight UTC could fail once and then pass on a rerun, and that kind of failure wastes time chasing something that isn't a bug. With a fixed clock, both see the same "today".
+- In the app: `Program.cs` registers `TimeProvider.System`, so it is still the real clock.
+- How: `Validate` gets `TimeProvider` from the `ValidationContext`, so the rule stays in the DTO. Getting a service inside a DTO is a small service locator, accepted to keep the rule where it is.
+
 ## Task 3: in-memory audit queue
 
 A bounded `Channel` (capacity 1000) with one `BackgroundService`. The request queues the audit entry with `TryWrite` and returns, and the worker writes it to SQL Server.

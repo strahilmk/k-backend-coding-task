@@ -44,6 +44,7 @@ builder.Services.AddDbContext<ClaimsContext>(options =>
     options.UseMongoDB(database.Client, database.DatabaseNamespace.DatabaseName);
 });
 
+builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddSingleton(Channel.CreateBounded<IAuditEntry>(
     new BoundedChannelOptions(1000) { SingleReader = true }));
 builder.Services.AddSingleton<IAuditer, Auditer>();

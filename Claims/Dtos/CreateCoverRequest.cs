@@ -11,8 +11,11 @@ public record CreateCoverRequest : IValidatableObject
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
+        // TimeProvider comes from DI, so tests can fix "today".
+        var today = (validationContext.GetService<TimeProvider>() ?? TimeProvider.System).GetUtcNow().UtcDateTime.Date;
+
         // Compared by date, so a cover can start today.
-        if (StartDate.Date < DateTime.UtcNow.Date)
+        if (StartDate.Date < today)
         {
             yield return new ValidationResult(
                 "StartDate cannot be in the past.", [nameof(StartDate)]);

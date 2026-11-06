@@ -1,13 +1,20 @@
 using System.ComponentModel.DataAnnotations;
 using Claims.Dtos;
 using Claims.Models;
+using Claims.Tests.Fakes;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace Claims.Tests.Dtos;
 
 public class CreateCoverRequestTests
 {
-    private static readonly DateTime Today = DateTime.UtcNow.Date;
+    // "Now" during validation is fixed to midday on this date.
+    private static readonly DateTime Today = new(2026, 6, 15, 0, 0, 0, DateTimeKind.Utc);
+
+    private static readonly IServiceProvider Services = new ServiceCollection()
+        .AddSingleton<TimeProvider>(new FixedTimeProvider(new DateTimeOffset(Today.AddHours(12))))
+        .BuildServiceProvider();
 
     [Fact]
     public void StartDate_yesterday_is_invalid()
@@ -73,7 +80,7 @@ public class CreateCoverRequestTests
 
     // Returns the names of the fields that failed validation.
     private static List<string> Validate(CreateCoverRequest request) =>
-        request.Validate(new ValidationContext(request))
+        request.Validate(new ValidationContext(request, Services, null))
             .SelectMany(result => result.MemberNames)
             .ToList();
 }
