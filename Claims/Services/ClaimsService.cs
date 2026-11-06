@@ -60,13 +60,13 @@ public class ClaimsService : IClaimsService
         };
 
         await _claimsRepository.AddAsync(claim);
-        _auditer.AuditClaim(claim.Id, "POST");
+        _auditer.AuditClaim(claim.Id, HttpRequestType.Post);
         return ClaimResponse.From(claim);
     }
 
     public async Task DeleteAsync(string id)
     {
-        _auditer.AuditClaim(id, "DELETE");
+        _auditer.AuditClaim(id, HttpRequestType.Delete);
         await _claimsRepository.DeleteAsync(id);
     }
 }

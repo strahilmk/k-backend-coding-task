@@ -39,13 +39,13 @@ public class CoversService : ICoversService
         };
 
         await _coversRepository.AddAsync(cover);
-        _auditer.AuditCover(cover.Id, "POST");
+        _auditer.AuditCover(cover.Id, HttpRequestType.Post);
         return CoverResponse.From(cover);
     }
 
     public async Task DeleteAsync(string id)
     {
-        _auditer.AuditCover(id, "DELETE");
+        _auditer.AuditCover(id, HttpRequestType.Delete);
         await _coversRepository.DeleteAsync(id);
     }
 

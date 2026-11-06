@@ -7,7 +7,7 @@ namespace Claims.Auditing
     /// </summary>
     public interface IAuditer
     {
-        void AuditClaim(string id, string httpRequestType);
-        void AuditCover(string id, string httpRequestType);
+        void AuditClaim(string id, HttpRequestType httpRequestType);
+        void AuditCover(string id, HttpRequestType httpRequestType);
     }
 }

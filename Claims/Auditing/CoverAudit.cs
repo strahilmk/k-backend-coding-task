@@ -8,6 +8,6 @@
 
         public DateTime Created { get; set; }
 
-        public required string HttpRequestType { get; set; }
+        public required HttpRequestType HttpRequestType { get; set; }
     }
 }

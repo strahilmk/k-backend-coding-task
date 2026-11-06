@@ -18,7 +18,7 @@ namespace Claims.Auditing
             _logger = logger;
         }
 
-        public void AuditClaim(string id, string httpRequestType)
+        public void AuditClaim(string id, HttpRequestType httpRequestType)
         {
             Enqueue(new ClaimAudit
             {
@@ -28,7 +28,7 @@ namespace Claims.Auditing
             }, id);
         }
 
-        public void AuditCover(string id, string httpRequestType)
+        public void AuditCover(string id, HttpRequestType httpRequestType)
         {
             Enqueue(new CoverAudit
             {
