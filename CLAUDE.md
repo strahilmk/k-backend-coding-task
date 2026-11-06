@@ -46,5 +46,5 @@ dotnet run --project Claims --launch-profile Claims
 
 - Work on `claims-solution`. `main` stays on the initial commit, and the PR goes into `main`.
 - Don't commit or push unless asked.
-- One commit per task, with a message saying what changed.
+- One commit per change you ask for, with a message saying what changed. Spec tasks can span several commits.
 - Files use LF line endings, enforced by `.gitattributes`. Check that `git diff --stat` shows only the lines you meant to change.
